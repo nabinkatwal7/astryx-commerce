@@ -30,42 +30,62 @@ export default function ProductDetailPage() {
         <BreadcrumbItem isCurrent>{product.name}</BreadcrumbItem>
       </Breadcrumbs>
 
-      <Card>
-        <HStack gap={6} wrap="wrap">
-          <Thumbnail src={product.image} alt={product.name} />
-          <VStack gap={3}>
-            <HStack gap={2} vAlign="center">
-              <Heading level={1}>{product.name}</Heading>
-              {product.badge && <Badge label={product.badge} variant={product.badgeVariant as any} />}
-            </HStack>
-            <Text type="supporting">{product.category}</Text>
-            <Text type="large">{product.description}</Text>
-            <HStack gap={3} vAlign="center">
-              <Heading level={1} type="display-2">${product.price}</Heading>
-              {product.originalPrice && (
-                <Text color="secondary" hasStrikethrough><Heading level={3}>${product.originalPrice}</Heading></Text>
-              )}
-            </HStack>
+      <HStack gap={6} wrap="wrap" vAlign="start">
+        <Thumbnail
+          src={product.image}
+          alt={product.name}
+          style={{ width: 400, height: 400, objectFit: 'cover', borderRadius: 8, flexShrink: 0 }}
+        />
+
+        <VStack gap={3} style={{ flex: 1, minWidth: 300 }}>
+          <Heading level={1}>{product.name}</Heading>
+          <HStack gap={2} vAlign="center" wrap="wrap">
             <HStack gap={1}>
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Icon key={star} icon="success" />
+              {[1, 2, 3, 4, 5].map((s) => (
+                <Icon key={s} icon="success" />
               ))}
-              <Text type="supporting">{product.rating} / 5</Text>
             </HStack>
-            <Divider />
-            <HStack gap={4} vAlign="end" wrap="wrap">
-              <NumberInput label="Quantity" value={1} min={1} max={10} onChange={() => {}} />
-              <Selector label="Color" options={[{ label: 'Black', value: 'black' }, { label: 'White', value: 'white' }, { label: 'Blue', value: 'blue' }]} />
-            </HStack>
-            <HStack gap={3}>
-              <Button label="Add to cart" variant="primary" size="lg" icon={<Icon icon="check" />} />
-              <Button label="Buy now" variant="secondary" size="lg" />
-              <Button label="Wishlist" variant="ghost" size="lg" icon={<Icon icon="success" />} isIconOnly />
-            </HStack>
+            <Text color="primary" weight="bold">{product.rating}</Text>
+            <Text type="supporting" color="secondary">({Math.floor(Math.random() * 500) + 50} ratings)</Text>
+          </HStack>
+          <HStack gap={2} vAlign="center" wrap="wrap">
+            {product.badge && <Badge label={product.badge} variant={product.badgeVariant as any} />}
             <Badge label={product.inStock ? 'In Stock' : 'Out of Stock'} variant={product.inStock ? 'success' : 'error'} />
-          </VStack>
-        </HStack>
-      </Card>
+          </HStack>
+          <Divider />
+          <HStack gap={3} vAlign="center">
+            <Heading level={1} type="display-2" color="primary">${product.price}</Heading>
+            {product.originalPrice && (
+              <>
+                <Text color="secondary" hasStrikethrough><Heading level={3}>${product.originalPrice}</Heading></Text>
+                <Badge label={`Save $${product.originalPrice - product.price}`} variant="success" />
+              </>
+            )}
+          </HStack>
+          <Text type="large">{product.description}</Text>
+
+          <Card variant="muted" style={{ width: '100%' }}>
+            <VStack gap={3}>
+              <NumberInput label="Quantity" value={1} min={1} max={10} onChange={() => {}} />
+              <Selector
+                label="Color"
+                options={[
+                  { label: 'Black', value: 'black' },
+                  { label: 'White', value: 'white' },
+                  { label: 'Blue', value: 'blue' },
+                ]}
+              />
+              <HStack gap={3}>
+                <Button label="Add to Cart" variant="primary" size="lg" icon={<Icon icon="check" />} style={{ flex: 1 }} />
+                <Button label="Buy Now" variant="secondary" size="lg" style={{ flex: 1 }} />
+              </HStack>
+              <Button label="Add to Wishlist" variant="ghost" size="sm" icon={<Icon icon="success" />} />
+            </VStack>
+          </Card>
+        </VStack>
+      </HStack>
+
+      <Divider />
 
       <TabList value={tab} onChange={setTab}>
         <Tab value="details" label="Details" />
@@ -80,31 +100,65 @@ export default function ProductDetailPage() {
           <MetadataListItem label="Material">Premium quality</MetadataListItem>
           <MetadataListItem label="Weight">0.5 kg</MetadataListItem>
           <MetadataListItem label="Dimensions">20 x 15 x 5 cm</MetadataListItem>
+          <MetadataListItem label="Warranty">1 year limited</MetadataListItem>
         </MetadataList>
       )}
       {tab === 'shipping' && (
-        <VStack gap={2}>
-          <Text weight="bold">Shipping Information</Text>
-          <Text>Free shipping on orders over $50. Standard delivery 5-7 business days. Express delivery 1-2 business days available.</Text>
+        <VStack gap={3}>
+          <Card variant="muted">
+            <VStack gap={2}>
+              <Heading level={3}>Delivery Options</Heading>
+              <Text weight="bold">Free Shipping</Text>
+              <Text color="secondary">On orders over $50 — estimated 5-7 business days</Text>
+              <Text weight="bold">Express Delivery</Text>
+              <Text color="secondary">$12.99 — estimated 1-2 business days</Text>
+              <Text weight="bold">Same-Day Delivery</Text>
+              <Text color="secondary">Available in select areas — order before 2 PM</Text>
+            </VStack>
+          </Card>
+          <Card variant="muted">
+            <VStack gap={2}>
+              <Heading level={3}>Return Policy</Heading>
+              <Text color="secondary">Free returns within 30 days of delivery. Items must be in original condition.</Text>
+            </VStack>
+          </Card>
         </VStack>
       )}
       {tab === 'reviews' && (
-        <VStack gap={3}>
-          <HStack gap={2} vAlign="center">
-            <Icon icon="success" />
-            <Heading level={2}>{product.rating}</Heading>
-            <Text type="supporting">out of 5</Text>
+        <VStack gap={4}>
+          <HStack gap={3} vAlign="center">
+            <VStack hAlign="center" gap={1}>
+              <Heading level={1} type="display-2">{product.rating}</Heading>
+              <HStack gap={1}>
+                {[1, 2, 3, 4, 5].map((s) => <Icon key={s} icon="success" />)}
+              </HStack>
+              <Text type="supporting" color="secondary">out of 5</Text>
+            </VStack>
+            <Divider orientation="vertical" />
+            <Button label="Write a Review" variant="secondary" />
           </HStack>
           <Card variant="muted">
-            <VStack gap={1}>
+            <VStack gap={2}>
               <HStack gap={2} vAlign="center">
                 <Text weight="bold">Ami Pena</Text>
-                <Text type="supporting">2 days ago</Text>
+                <Text type="supporting" color="secondary">2 days ago</Text>
               </HStack>
               <HStack gap={1}>
                 {[1, 2, 3, 4, 5].map((s) => <Icon key={s} icon="success" />)}
               </HStack>
-              <Text>Absolutely love this product! The quality exceeds expectations.</Text>
+              <Text>Absolutely love this product! The quality exceeds expectations. Fast shipping and beautiful packaging. Would recommend to anyone looking for a premium item.</Text>
+            </VStack>
+          </Card>
+          <Card variant="muted">
+            <VStack gap={2}>
+              <HStack gap={2} vAlign="center">
+                <Text weight="bold">John Doe</Text>
+                <Text type="supporting" color="secondary">1 week ago</Text>
+              </HStack>
+              <HStack gap={1}>
+                {[1, 2, 3, 4, 5].map((s) => <Icon key={s} icon="success" />)}
+              </HStack>
+              <Text>Great product for the price. The design is minimalist and elegant. The only reason I&rsquo;m giving 4 stars is that the packaging could be more eco-friendly.</Text>
             </VStack>
           </Card>
         </VStack>

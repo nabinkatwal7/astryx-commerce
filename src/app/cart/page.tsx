@@ -11,17 +11,14 @@ import { VStack, HStack, Section } from '@astryxdesign/core/Layout';
 import { Table, TableRow, TableCell, TableHeaderCell, proportional } from '@astryxdesign/core/Table';
 import { NumberInput } from '@astryxdesign/core/NumberInput';
 import { Thumbnail } from '@astryxdesign/core/Thumbnail';
-import { List, ListItem } from '@astryxdesign/core/List';
 import { MetadataList, MetadataListItem } from '@astryxdesign/core/MetadataList';
-import { EmptyState } from '@astryxdesign/core/EmptyState';
-import { Link } from '@astryxdesign/core/Link';
 
 const columns = [
-  { key: 'product', label: 'Product', width: proportional(3) },
-  { key: 'price', label: 'Price', width: proportional(1) },
-  { key: 'quantity', label: 'Quantity', width: proportional(1) },
-  { key: 'total', label: 'Total', width: proportional(1) },
-  { key: 'action', label: '', width: proportional(0.5) },
+  { key: 'product', header: 'Product', width: proportional(4) },
+  { key: 'price', header: 'Price', width: proportional(1) },
+  { key: 'quantity', header: 'Quantity', width: proportional(1.5) },
+  { key: 'total', header: 'Total', width: proportional(1) },
+  { key: 'action', header: '', width: proportional(0.5) },
 ];
 
 const cartRows = [
@@ -40,7 +37,11 @@ export default function CartPage() {
       </Heading>
 
       <HStack gap={6} wrap="wrap" vAlign="start">
-        <VStack gap={4}>
+        <VStack gap={4} style={{ flex: 1, minWidth: 0 }}>
+          <Text type="large" color="secondary">
+            Subtotal ({cartRows.length} items): <strong>${subtotal.toFixed(2)}</strong>
+          </Text>
+
           <Table columns={columns} dividers="rows">
             <TableRow>
               <TableHeaderCell>Product</TableHeaderCell>
@@ -53,19 +54,20 @@ export default function CartPage() {
               <TableRow key={row.id}>
                 <TableCell>
                   <HStack gap={3} vAlign="center">
-                    <Thumbnail src={row.image} alt={row.name} />
+                    <Thumbnail src={row.image} alt={row.name} style={{ width: 80, height: 80, borderRadius: 4, objectFit: 'cover' }} />
                     <VStack gap={0}>
                       <Text weight="bold">{row.name}</Text>
-                      <Text type="supporting">SKU: AST-{row.id}-001</Text>
+                      <Text type="supporting" color="secondary">SKU: AST-{row.id}-001</Text>
+                      <Badge label="In Stock" variant="success" />
                     </VStack>
                   </HStack>
                 </TableCell>
-                <TableCell>${row.price}</TableCell>
+                <TableCell>${row.price.toFixed(2)}</TableCell>
                 <TableCell>
-                  <NumberInput label={`Qty-${row.id}`} isLabelHidden value={row.quantity} min={1} max={99} onChange={() => {}} />
+                  <NumberInput label={`Qty-${row.id}`} isLabelHidden value={row.quantity} min={1} max={99} onChange={() => {}} style={{ width: 80 }} />
                 </TableCell>
                 <TableCell>
-                  <Text weight="bold">${row.total}</Text>
+                  <Text weight="bold">${row.total.toFixed(2)}</Text>
                 </TableCell>
                 <TableCell>
                   <IconButton label="Remove" icon={<Icon icon="close" />} variant="ghost" size="sm" />
@@ -80,24 +82,36 @@ export default function CartPage() {
           </HStack>
         </VStack>
 
-        <Card width={320}>
-          <VStack gap={3}>
-            <Heading level={2}>Order Summary</Heading>
-            <MetadataList>
-              <MetadataListItem label="Subtotal">{`$${subtotal}`}</MetadataListItem>
-              <MetadataListItem label="Shipping">$12.00</MetadataListItem>
-              <MetadataListItem label="Tax">{`$${(subtotal * 0.08).toFixed(2)}`}</MetadataListItem>
-            </MetadataList>
-            <Divider />
-            <HStack gap={2} vAlign="center">
-              <Heading level={3}>Total</Heading>
-              <Heading level={2}>${(subtotal + 12 + subtotal * 0.08).toFixed(2)}</Heading>
-            </HStack>
-            <Badge label="Free shipping on orders over $50!" variant="success" />
-            <Button label="Proceed to Checkout" variant="primary" />
-            <Button label="Pay with PayPal" variant="secondary" icon={<Icon icon="calendar" />} />
-          </VStack>
-        </Card>
+        <VStack gap={3} style={{ width: 320, flexShrink: 0 }}>
+          <Card>
+            <VStack gap={3}>
+              <Heading level={2}>Order Summary</Heading>
+              <MetadataList>
+                <MetadataListItem label="Items">{`${cartRows.length}`}</MetadataListItem>
+                <MetadataListItem label="Subtotal">{`$${subtotal.toFixed(2)}`}</MetadataListItem>
+                <MetadataListItem label="Shipping">$12.00</MetadataListItem>
+                <MetadataListItem label="Tax">{`$${(subtotal * 0.08).toFixed(2)}`}</MetadataListItem>
+              </MetadataList>
+              <Divider />
+              <HStack gap={2} vAlign="center">
+                <Heading level={3}>Order Total</Heading>
+                <Heading level={2} color="primary">${(subtotal + 12 + subtotal * 0.08).toFixed(2)}</Heading>
+              </HStack>
+              <Badge label="Free shipping on orders over $50!" variant="success" />
+              <Button label="Proceed to Checkout" variant="primary" />
+              <Button label="Pay with PayPal" variant="secondary" icon={<Icon icon="calendar" />} />
+            </VStack>
+          </Card>
+          <Card variant="muted">
+            <VStack gap={2}>
+              <HStack gap={2} vAlign="center">
+                <Icon icon="check" />
+                <Text weight="bold">Secure Checkout</Text>
+              </HStack>
+              <Text type="supporting" color="secondary">SSL encrypted. Your payment info is safe.</Text>
+            </VStack>
+          </Card>
+        </VStack>
       </HStack>
     </VStack>
   );

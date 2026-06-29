@@ -1,23 +1,18 @@
-"use client";
+'use client';
 
-import { Badge } from "@astryxdesign/core/Badge";
-import { BreadcrumbItem, Breadcrumbs } from "@astryxdesign/core/Breadcrumbs";
-import { Button } from "@astryxdesign/core/Button";
-import { Card } from "@astryxdesign/core/Card";
-import { CheckboxInput } from "@astryxdesign/core/CheckboxInput";
-import { Divider } from "@astryxdesign/core/Divider";
-import { FormLayout } from "@astryxdesign/core/FormLayout";
-import { Icon } from "@astryxdesign/core/Icon";
-import { HStack, VStack } from "@astryxdesign/core/Layout";
-import {
-  MetadataList,
-  MetadataListItem,
-} from "@astryxdesign/core/MetadataList";
-import { RadioList, RadioListItem } from "@astryxdesign/core/RadioList";
-import { Selector } from "@astryxdesign/core/Selector";
-import { Switch } from "@astryxdesign/core/Switch";
-import { Heading } from "@astryxdesign/core/Text";
-import { TextInput } from "@astryxdesign/core/TextInput";
+import { Heading, Text } from '@astryxdesign/core/Text';
+import { Button } from '@astryxdesign/core/Button';
+import { Card } from '@astryxdesign/core/Card';
+import { Badge } from '@astryxdesign/core/Badge';
+import { Divider } from '@astryxdesign/core/Divider';
+import { Icon } from '@astryxdesign/core/Icon';
+import { VStack, HStack, Section } from '@astryxdesign/core/Layout';
+import { TextInput } from '@astryxdesign/core/TextInput';
+import { TextArea } from '@astryxdesign/core/TextArea';
+import { Selector } from '@astryxdesign/core/Selector';
+import { Breadcrumbs, BreadcrumbItem } from '@astryxdesign/core/Breadcrumbs';
+import { MetadataList, MetadataListItem } from '@astryxdesign/core/MetadataList';
+import { RadioList } from '@astryxdesign/core/RadioList';
 
 export default function CheckoutPage() {
   return (
@@ -31,160 +26,122 @@ export default function CheckoutPage() {
       <Heading level={1}>Checkout</Heading>
 
       <HStack gap={6} wrap="wrap" vAlign="start">
-        <VStack gap={4}>
-          <Card>
-            <VStack gap={4}>
-              <Heading level={2}>Contact Information</Heading>
-              <FormLayout>
-                <TextInput
-                  label="Email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value=""
-                  onChange={() => {}}
-                />
-                <TextInput
-                  label="Phone"
-                  placeholder="+1 (555) 000-0000"
-                  value=""
-                  onChange={() => {}}
-                />
-              </FormLayout>
-            </VStack>
-          </Card>
-
-          <Card>
-            <VStack gap={4}>
-              <Heading level={2}>Shipping Address</Heading>
-              <FormLayout>
+        <VStack gap={6} style={{ flex: 1, minWidth: 0 }}>
+          <Section>
+            <Heading level={2}>1. Shipping Address</Heading>
+            <Card>
+              <VStack gap={3}>
                 <HStack gap={3} wrap="wrap">
-                  <TextInput label="First name" value="" onChange={() => {}} />
-                  <TextInput label="Last name" value="" onChange={() => {}} />
+                  <TextInput label="First Name" placeholder="John" value="" onChange={() => {}} style={{ flex: 1 }} />
+                  <TextInput label="Last Name" placeholder="Doe" value="" onChange={() => {}} style={{ flex: 1 }} />
                 </HStack>
-                <TextInput
-                  label="Address"
-                  placeholder="123 Main St"
-                  value=""
-                  onChange={() => {}}
-                />
-                <TextInput
-                  label="Apartment, suite, etc. (optional)"
-                  value=""
-                  onChange={() => {}}
-                />
+                <TextInput label="Email" type="email" placeholder="you@example.com" value="" onChange={() => {}} />
+                <TextInput label="Phone" placeholder="+1 (555) 000-0000" value="" onChange={() => {}} />
+                <TextInput label="Address" placeholder="123 Main St" value="" onChange={() => {}} />
                 <HStack gap={3} wrap="wrap">
-                  <TextInput label="City" value="" onChange={() => {}} />
+                  <TextInput label="City" placeholder="New York" value="" onChange={() => {}} style={{ flex: 1 }} />
                   <Selector
                     label="State"
                     options={[
-                      { label: "California", value: "CA" },
-                      { label: "New York", value: "NY" },
-                      { label: "Texas", value: "TX" },
+                      { label: 'New York', value: 'NY' },
+                      { label: 'California', value: 'CA' },
+                      { label: 'Texas', value: 'TX' },
                     ]}
+                    style={{ flex: 1 }}
                   />
-                  <TextInput label="ZIP code" value="" onChange={() => {}} />
+                  <TextInput label="ZIP Code" placeholder="10001" value="" onChange={() => {}} style={{ width: 140 }} />
                 </HStack>
-                <Selector
-                  label="Country"
-                  options={[
-                    { label: "United States", value: "US" },
-                    { label: "Canada", value: "CA" },
-                    { label: "United Kingdom", value: "UK" },
-                  ]}
-                />
-              </FormLayout>
-              <HStack gap={2} vAlign="center">
-                <CheckboxInput label="Use same address for billing" value={true} />
-              </HStack>
-            </VStack>
-          </Card>
+                <Button label="Use this address" variant="primary" />
+              </VStack>
+            </Card>
+          </Section>
 
-          <Card>
-            <VStack gap={4}>
-              <Heading level={2}>Shipping Method</Heading>
-              <RadioList label="Shipping method" value="standard" onChange={() => {}}>
-                <RadioListItem
-                  label="Economy Shipping"
-                  description="Delivered in 5-7 business days"
-                  value="economy"
-                />
-                <RadioListItem
-                  label="Standard Shipping"
-                  description="Delivered in 3-5 business days"
-                  value="standard"
-                />
-                <RadioListItem
-                  label="Express Shipping"
-                  description="Delivered in 1-2 business days"
-                  value="express"
-                />
-              </RadioList>
-            </VStack>
-          </Card>
+          <Section>
+            <Heading level={2}>2. Payment Method</Heading>
+            <Card>
+              <VStack gap={3}>
+                <RadioList label="Payment" value="card" onChange={() => {}}>
+                  <Card variant="muted">
+                    <HStack gap={3} vAlign="center">
+                      <Icon icon="calendar" />
+                      <VStack gap={0}>
+                        <Text weight="bold">Credit / Debit Card</Text>
+                        <Text type="supporting" color="secondary">Visa, Mastercard, Amex accepted</Text>
+                      </VStack>
+                    </HStack>
+                  </Card>
+                  <Card variant="muted">
+                    <HStack gap={3} vAlign="center">
+                      <Icon icon="check" />
+                      <VStack gap={0}>
+                        <Text weight="bold">PayPal</Text>
+                        <Text type="supporting" color="secondary">Fast & secure online payments</Text>
+                      </VStack>
+                    </HStack>
+                  </Card>
+                </RadioList>
 
-          <Card>
-            <VStack gap={4}>
-              <Heading level={2}>Payment Method</Heading>
-              <RadioList label="Payment method" value="card" onChange={() => {}}>
-                <RadioListItem label="Credit Card" value="card" />
-                <RadioListItem label="Apple Pay" value="apple-pay" />
-                <RadioListItem label="Google Pay" value="google-pay" />
-              </RadioList>
-              <Divider />
-              <FormLayout>
-                <TextInput
-                  label="Card number"
-                  placeholder="1234 5678 9012 3456"
-                  startIcon={<Icon icon="calendar" />}
-                  value=""
-                  onChange={() => {}}
-                />
+                <Divider />
+
                 <HStack gap={3} wrap="wrap">
-                  <TextInput
-                    label="Expiry"
-                    placeholder="MM/YY"
-                    value=""
-                    onChange={() => {}}
-                  />
-                  <TextInput
-                    label="CVC"
-                    placeholder="123"
-                    value=""
-                    onChange={() => {}}
-                  />
+                  <TextInput label="Card Number" placeholder="1234 5678 9012 3456" value="" onChange={() => {}} style={{ flex: 2 }} />
+                  <TextInput label="Expiry" placeholder="MM/YY" value="" onChange={() => {}} style={{ flex: 1 }} />
+                  <TextInput label="CVC" placeholder="123" value="" onChange={() => {}} style={{ width: 100 }} />
                 </HStack>
-              </FormLayout>
-              <HStack gap={2} vAlign="center">
-                <Switch label="Securely save for 1-click checkout" value={false} />
-              </HStack>
-            </VStack>
-          </Card>
+                <TextInput label="Name on Card" placeholder="John Doe" value="" onChange={() => {}} />
+              </VStack>
+            </Card>
+          </Section>
 
-          <Button label="Place Order" variant="primary" size="lg" />
+          <Section>
+            <Heading level={2}>3. Review Your Order</Heading>
+            <Card>
+              <VStack gap={3}>
+                <HStack gap={4} wrap="wrap">
+                  <VStack gap={1}>
+                    <Text weight="bold">Shipping Address</Text>
+                    <Text color="secondary">John Doe<br />123 Main St<br />New York, NY 10001</Text>
+                  </VStack>
+                  <VStack gap={1}>
+                    <Text weight="bold">Payment Method</Text>
+                    <Text color="secondary">Visa ending in 3456</Text>
+                  </VStack>
+                </HStack>
+                <Divider />
+                <MetadataList>
+                  <MetadataListItem label="Subtotal">$786.00</MetadataListItem>
+                  <MetadataListItem label="Shipping">$12.00</MetadataListItem>
+                  <MetadataListItem label="Tax">$62.88</MetadataListItem>
+                </MetadataList>
+                <Divider />
+                <HStack gap={2} vAlign="center">
+                  <Heading level={2}>Total: $860.88</Heading>
+                </HStack>
+                <Button label="Place Your Order" variant="primary" size="lg" icon={<Icon icon="check" />} />
+                <Text type="supporting" color="secondary">
+                  By placing your order, you agree to our Terms of Service and Privacy Policy.
+                </Text>
+              </VStack>
+            </Card>
+          </Section>
         </VStack>
 
-        <Card width={320}>
-          <VStack gap={3}>
-            <Heading level={2}>Order Summary</Heading>
-            <MetadataList>
-              <MetadataListItem label="Minimalist Watch × 1">$199</MetadataListItem>
-              <MetadataListItem label="Wireless Headphones × 2">$498</MetadataListItem>
-              <MetadataListItem label="Canvas Backpack × 1">$89</MetadataListItem>
-            </MetadataList>
-            <Divider />
-            <MetadataList>
-              <MetadataListItem label="Subtotal">$786</MetadataListItem>
-              <MetadataListItem label="Shipping">$16.00</MetadataListItem>
-              <MetadataListItem label="Tax">$62.88</MetadataListItem>
-            </MetadataList>
-            <Divider />
-            <HStack gap={2} vAlign="center">
-              <Heading level={3}>Total</Heading>
-              <Heading level={2}>$864.88</Heading>
-            </HStack>
-            <Badge label="Free returns within 30 days" variant="info" />
-          </VStack>
-        </Card>
+        <VStack gap={3} style={{ width: 280, flexShrink: 0 }}>
+          <Card>
+            <VStack gap={3}>
+              <Heading level={3}>Order Summary</Heading>
+              <MetadataList>
+                <MetadataListItem label="Items">3</MetadataListItem>
+                <MetadataListItem label="Subtotal">$786.00</MetadataListItem>
+                <MetadataListItem label="Shipping">$12.00</MetadataListItem>
+                <MetadataListItem label="Tax">$62.88</MetadataListItem>
+              </MetadataList>
+              <Divider />
+              <Heading level={2}>$860.88</Heading>
+              <Badge label="Free Shipping" variant="success" />
+            </VStack>
+          </Card>
+        </VStack>
       </HStack>
     </VStack>
   );

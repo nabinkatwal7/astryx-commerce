@@ -5,4 +5,12 @@
 body {
   margin: 0;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-astryx-theme="neutral"] {
+  --color-primary: #1a73e8;
+  --color-primary-hover: #1557b0;
+  --neutral-800: #1a1a2e;
+  --neutral-200: #e0e0e0;
 }
