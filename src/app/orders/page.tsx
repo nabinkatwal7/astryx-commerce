@@ -1,23 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Heading, Text } from '@astryxdesign/core/Text';
-import { Button } from '@astryxdesign/core/Button';
-import { Card } from '@astryxdesign/core/Card';
-import { Badge } from '@astryxdesign/core/Badge';
-import { Icon } from '@astryxdesign/core/Icon';
-import { VStack, HStack, Section } from '@astryxdesign/core/Layout';
-import { Table, TableRow, TableCell, TableHeaderCell, proportional } from '@astryxdesign/core/Table';
-import { TextInput } from '@astryxdesign/core/TextInput';
-import { Selector } from '@astryxdesign/core/Selector';
-import { Pagination } from '@astryxdesign/core/Pagination';
 import { orders } from '@/components/products';
 
-const statusVariant: Record<string, 'info' | 'success' | 'warning' | 'error'> = {
-  confirmed: 'info',
-  shipped: 'warning',
-  delivered: 'success',
-  cancelled: 'error',
+const statusColors: Record<string, string> = {
+  confirmed: '#007600',
+  shipped: '#c45500',
+  delivered: '#007600',
+  cancelled: '#b12704',
 };
 
 export default function OrdersPage() {
@@ -27,94 +17,97 @@ export default function OrdersPage() {
   const paged = orders.slice((page - 1) * pageSize, page * pageSize);
 
   return (
-    <VStack gap={6}>
-      <Heading level={1}>Your Orders</Heading>
+    <div>
+      <div className="breadcrumb-list">
+        <a href="/">Home</a><span className="sep">›</span>
+        <span>Your Orders</span>
+      </div>
 
-      <HStack gap={3} wrap="wrap" vAlign="center">
-        <TextInput label="Search orders" placeholder="Search by order ID..." value="" onChange={() => {}} />
-        <Selector
-          label="Filter"
-          options={[
-            { label: 'All Orders', value: 'all' },
-            { label: 'Last 30 days', value: '30' },
-            { label: 'Last 6 months', value: '180' },
-          ]}
+      <h1 style={{ fontSize: 24, fontWeight: 600, margin: '0 0 16px' }}>Your Orders</h1>
+
+      <div style={{ display: 'flex', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
+        <input
+          placeholder="Search all orders..."
+          style={{
+            padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 14,
+            flex: 1, minWidth: 200, fontFamily: 'inherit',
+          }}
         />
-      </HStack>
+        <select style={{
+          padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4,
+          fontSize: 14, background: '#fff', fontFamily: 'inherit',
+        }}>
+          <option>All Orders</option>
+          <option>Last 30 days</option>
+          <option>Last 6 months</option>
+        </select>
+      </div>
 
-      <Section>
-        <Table columns={[
-          { key: 'order', header: 'Order', width: proportional(1) },
-          { key: 'date', header: 'Date', width: proportional(1) },
-          { key: 'status', header: 'Status', width: proportional(1) },
-          { key: 'total', header: 'Total', width: proportional(1) },
-          { key: 'action', header: '', width: proportional(1) },
-        ]}>
-          <TableRow>
-            <TableHeaderCell>Order</TableHeaderCell>
-            <TableHeaderCell>Date</TableHeaderCell>
-            <TableHeaderCell>Status</TableHeaderCell>
-            <TableHeaderCell>Total</TableHeaderCell>
-            <TableHeaderCell />
-          </TableRow>
-          {paged.map((order) => (
-            <TableRow key={order.id}>
-              <TableCell>
-                <Text weight="bold">#{order.id}</Text>
-              </TableCell>
-              <TableCell>{order.date}</TableCell>
-              <TableCell>
-                <Badge
-                  label={order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                  variant={statusVariant[order.status]}
-                />
-              </TableCell>
-              <TableCell>
-                <Text weight="bold">${order.total.toFixed(2)}</Text>
-                <Text type="supporting" color="secondary">{order.items} item{order.items > 1 ? 's' : ''}</Text>
-              </TableCell>
-              <TableCell>
-                <HStack gap={2}>
-                  <Button label="View Order" variant="secondary" size="sm" />
-                  <Button label="Track" variant="ghost" size="sm" />
-                </HStack>
-              </TableCell>
-            </TableRow>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {paged.map((order) => (
+          <div key={order.id} style={{
+            background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: 16,
+          }}>
+            <div style={{
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              flexWrap: 'wrap', gap: 8, marginBottom: 8,
+              fontSize: 13, color: '#565959',
+            }}>
+              <span><strong style={{ color: '#0f1111' }}>Order #{order.id}</strong></span>
+              <span>Placed on {order.date}</span>
+              <span style={{ color: statusColors[order.status], fontWeight: 600, textTransform: 'capitalize' }}>
+                {order.status}
+              </span>
+              <span><strong style={{ color: '#0f1111' }}>${order.total.toFixed(2)}</strong></span>
+            </div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <button className="btn-amazon secondary" style={{ fontSize: 12, height: 28, padding: '0 10px' }}>
+                View Order
+              </button>
+              <button className="btn-amazon secondary" style={{ fontSize: 12, height: 28, padding: '0 10px' }}>
+                Track Package
+              </button>
+              <button className="btn-amazon secondary" style={{ fontSize: 12, height: 28, padding: '0 10px' }}>
+                Return or Replace
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {totalPages > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 24 }}>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <button
+              key={p}
+              onClick={() => setPage(p)}
+              style={{
+                padding: '6px 12px', border: `1px solid ${p === page ? '#007185' : '#ddd'}`,
+                borderRadius: 4, background: '#fff',
+                color: p === page ? '#007185' : '#0f1111',
+                fontWeight: p === page ? 700 : 400,
+                cursor: 'pointer', fontSize: 13, fontFamily: 'inherit',
+              }}
+            >
+              {p}
+            </button>
           ))}
-        </Table>
+        </div>
+      )}
 
-        <HStack hAlign="center" style={{ marginTop: 16 }}>
-          <Pagination
-            page={page}
-            onChange={setPage}
-            totalPages={totalPages}
-            variant="pages"
-          />
-        </HStack>
-      </Section>
-
-      <Section>
-        <Heading level={2}>Order #1043 — In Transit</Heading>
-        <Card variant="muted">
-          <VStack gap={3}>
-            <HStack gap={4} wrap="wrap">
-              <VStack gap={1}>
-                <Text type="supporting" color="secondary">Arriving</Text>
-                <Text weight="bold">Tuesday, July 1</Text>
-              </VStack>
-              <VStack gap={1}>
-                <Text type="supporting" color="secondary">Shipped via</Text>
-                <Text weight="bold">UPS Ground</Text>
-              </VStack>
-              <VStack gap={1}>
-                <Text type="supporting" color="secondary">Tracking</Text>
-                <Text weight="bold">1Z999AA10123456784</Text>
-              </VStack>
-            </HStack>
-            <Button label="Track Package" variant="primary" size="sm" icon={<Icon icon="search" />} />
-          </VStack>
-        </Card>
-      </Section>
-    </VStack>
+      <div style={{
+        background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: 20, marginTop: 24,
+      }}>
+        <h2 style={{ fontSize: 18, fontWeight: 600, margin: '0 0 12px' }}>Order #1043 — In Transit</h2>
+        <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', fontSize: 14, marginBottom: 12 }}>
+          <div><span style={{ color: '#565959' }}>Arriving</span><br /><strong>Tuesday, July 1</strong></div>
+          <div><span style={{ color: '#565959' }}>Shipped via</span><br /><strong>UPS Ground</strong></div>
+          <div><span style={{ color: '#565959' }}>Tracking</span><br /><strong>1Z999AA10123456784</strong></div>
+        </div>
+        <button className="btn-amazon orange" style={{ fontSize: 13, height: 32 }}>
+          Track Package
+        </button>
+      </div>
+    </div>
   );
 }

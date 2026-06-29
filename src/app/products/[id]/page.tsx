@@ -2,167 +2,163 @@
 
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Heading, Text } from '@astryxdesign/core/Text';
-import { Button } from '@astryxdesign/core/Button';
-import { Card } from '@astryxdesign/core/Card';
-import { Badge } from '@astryxdesign/core/Badge';
-import { Divider } from '@astryxdesign/core/Divider';
-import { Icon } from '@astryxdesign/core/Icon';
-import { VStack, HStack, Section } from '@astryxdesign/core/Layout';
-import { Thumbnail } from '@astryxdesign/core/Thumbnail';
-import { NumberInput } from '@astryxdesign/core/NumberInput';
-import { Tab, TabList } from '@astryxdesign/core/TabList';
-import { Breadcrumbs, BreadcrumbItem } from '@astryxdesign/core/Breadcrumbs';
-import { MetadataList, MetadataListItem } from '@astryxdesign/core/MetadataList';
-import { Selector } from '@astryxdesign/core/Selector';
 import { products } from '@/components/products';
+
+function Stars({ rating }: { rating: number }) {
+  return (
+    <span className="star-rating">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <span key={i} className="star">{i <= Math.round(rating) ? '\u2605' : '\u2606'}</span>
+      ))}
+    </span>
+  );
+}
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const product = products.find(p => p.id === id) || products[0];
   const [tab, setTab] = useState('details');
 
+  const priceParts = product.price.toFixed(2).split('.');
+
   return (
-    <VStack gap={6}>
-      <Breadcrumbs>
-        <BreadcrumbItem href="/">Home</BreadcrumbItem>
-        <BreadcrumbItem href="/products">Products</BreadcrumbItem>
-        <BreadcrumbItem isCurrent>{product.name}</BreadcrumbItem>
-      </Breadcrumbs>
+    <div>
+      <div className="breadcrumb-list">
+        <a href="/">Home</a><span className="sep">›</span>
+        <a href="/products">Products</a><span className="sep">›</span>
+        <span>{product.name}</span>
+      </div>
 
-      <HStack gap={6} wrap="wrap" vAlign="start">
-        <Thumbnail
-          src={product.image}
-          alt={product.name}
-          style={{ width: 400, height: 400, objectFit: 'cover', borderRadius: 8, flexShrink: 0 }}
-        />
+      <div className="detail-layout">
+        <img className="detail-image" src={product.image} alt={product.name} />
 
-        <VStack gap={3} style={{ flex: 1, minWidth: 300 }}>
-          <Heading level={1}>{product.name}</Heading>
-          <HStack gap={2} vAlign="center" wrap="wrap">
-            <HStack gap={1}>
-              {[1, 2, 3, 4, 5].map((s) => (
-                <Icon key={s} icon="success" />
-              ))}
-            </HStack>
-            <Text color="primary" weight="bold">{product.rating}</Text>
-            <Text type="supporting" color="secondary">({Math.floor(Math.random() * 500) + 50} ratings)</Text>
-          </HStack>
-          <HStack gap={2} vAlign="center" wrap="wrap">
-            {product.badge && <Badge label={product.badge} variant={product.badgeVariant as any} />}
-            <Badge label={product.inStock ? 'In Stock' : 'Out of Stock'} variant={product.inStock ? 'success' : 'error'} />
-          </HStack>
-          <Divider />
-          <HStack gap={3} vAlign="center">
-            <Heading level={1} type="display-2" color="primary">${product.price}</Heading>
+        <div className="detail-info">
+          <h1>{product.name}</h1>
+          <div className="product-card-rating">
+            <Stars rating={product.rating} />
+            <span className="count">{product.rating.toFixed(1)} ({Math.floor(Math.random() * 500) + 50} ratings)</span>
+          </div>
+          <hr style={{ border: 'none', borderTop: '1px solid #ddd', margin: '12px 0' }} />
+          <div className="detail-price">
+            ${priceParts[0]}<span className="cents">{priceParts[1]}</span>
             {product.originalPrice && (
               <>
-                <Text color="secondary" hasStrikethrough><Heading level={3}>${product.originalPrice}</Heading></Text>
-                <Badge label={`Save $${product.originalPrice - product.price}`} variant="success" />
+                <span className="original">${product.originalPrice.toFixed(2)}</span>
+                <span className="save">Save ${(product.originalPrice - product.price).toFixed(2)}</span>
               </>
             )}
-          </HStack>
-          <Text type="large">{product.description}</Text>
+          </div>
+          <p style={{ fontSize: 14, lineHeight: 1.5, color: '#565959', margin: '8px 0 16px' }}>
+            {product.description}
+          </p>
+          <p style={{ fontSize: 14 }}><strong>Category:</strong> {product.category}</p>
+          <p style={{ fontSize: 14 }}>
+            <span style={{ color: product.inStock ? '#007600' : '#b12704', fontWeight: 600 }}>
+              {product.inStock ? 'In Stock' : 'Out of Stock'}
+            </span>
+          </p>
 
-          <Card variant="muted" style={{ width: '100%' }}>
-            <VStack gap={3}>
-              <NumberInput label="Quantity" value={1} min={1} max={10} onChange={() => {}} />
-              <Selector
-                label="Color"
-                options={[
-                  { label: 'Black', value: 'black' },
-                  { label: 'White', value: 'white' },
-                  { label: 'Blue', value: 'blue' },
-                ]}
-              />
-              <HStack gap={3}>
-                <Button label="Add to Cart" variant="primary" size="lg" icon={<Icon icon="check" />} style={{ flex: 1 }} />
-                <Button label="Buy Now" variant="secondary" size="lg" style={{ flex: 1 }} />
-              </HStack>
-              <Button label="Add to Wishlist" variant="ghost" size="sm" icon={<Icon icon="success" />} />
-            </VStack>
-          </Card>
-        </VStack>
-      </HStack>
+          <div className="detail-buy-box">
+            <div className="detail-price" style={{ fontSize: 22 }}>
+              ${priceParts[0]}<span className="cents">{priceParts[1]}</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12 }}>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 14 }}>
+                <label>Qty:</label>
+                <select style={{ padding: '4px 8px', border: '1px solid #ddd', borderRadius: 4, background: '#fff' }}>
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+                    <option key={n}>{n}</option>
+                  ))}
+                </select>
+              </div>
+              <button className="btn-amazon orange full">
+                Add to Cart
+              </button>
+              <button className="btn-amazon primary full">
+                Buy Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <Divider />
+      <hr style={{ border: 'none', borderTop: '1px solid #ddd', margin: '24px 0' }} />
 
-      <TabList value={tab} onChange={setTab}>
-        <Tab value="details" label="Details" />
-        <Tab value="shipping" label="Shipping" />
-        <Tab value="reviews" label="Reviews" />
-      </TabList>
+      <div className="tab-bar">
+        <button className={tab === 'details' ? 'active' : ''} onClick={() => setTab('details')}>Details</button>
+        <button className={tab === 'shipping' ? 'active' : ''} onClick={() => setTab('shipping')}>Shipping</button>
+        <button className={tab === 'reviews' ? 'active' : ''} onClick={() => setTab('reviews')}>Reviews</button>
+      </div>
 
       {tab === 'details' && (
-        <MetadataList>
-          <MetadataListItem label="SKU">{`AST-${product.id}-001`}</MetadataListItem>
-          <MetadataListItem label="Category">{product.category}</MetadataListItem>
-          <MetadataListItem label="Material">Premium quality</MetadataListItem>
-          <MetadataListItem label="Weight">0.5 kg</MetadataListItem>
-          <MetadataListItem label="Dimensions">20 x 15 x 5 cm</MetadataListItem>
-          <MetadataListItem label="Warranty">1 year limited</MetadataListItem>
-        </MetadataList>
+        <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: 20 }}>
+          <table style={{ width: '100%', fontSize: 14, borderCollapse: 'collapse' }}>
+            <tbody>
+              {[
+                ['SKU', `AST-${product.id}-001`],
+                ['Category', product.category],
+                ['Material', 'Premium quality'],
+                ['Weight', '0.5 kg'],
+                ['Dimensions', '20 x 15 x 5 cm'],
+                ['Warranty', '1 year limited'],
+              ].map(([label, value]) => (
+                <tr key={label}>
+                  <td style={{ padding: '8px 12px', color: '#565959', width: 140, borderBottom: '1px solid #eee' }}>{label}</td>
+                  <td style={{ padding: '8px 12px', borderBottom: '1px solid #eee' }}>{value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
+
       {tab === 'shipping' && (
-        <VStack gap={3}>
-          <Card variant="muted">
-            <VStack gap={2}>
-              <Heading level={3}>Delivery Options</Heading>
-              <Text weight="bold">Free Shipping</Text>
-              <Text color="secondary">On orders over $50 — estimated 5-7 business days</Text>
-              <Text weight="bold">Express Delivery</Text>
-              <Text color="secondary">$12.99 — estimated 1-2 business days</Text>
-              <Text weight="bold">Same-Day Delivery</Text>
-              <Text color="secondary">Available in select areas — order before 2 PM</Text>
-            </VStack>
-          </Card>
-          <Card variant="muted">
-            <VStack gap={2}>
-              <Heading level={3}>Return Policy</Heading>
-              <Text color="secondary">Free returns within 30 days of delivery. Items must be in original condition.</Text>
-            </VStack>
-          </Card>
-        </VStack>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: 20 }}>
+            <h3 style={{ margin: '0 0 8px', fontSize: 16 }}>Delivery Options</h3>
+            <div style={{ fontSize: 14, lineHeight: 1.8 }}>
+              <strong>Free Shipping</strong><br />
+              <span style={{ color: '#565959' }}>On orders over $50 — estimated 5-7 business days</span><br /><br />
+              <strong>Express Delivery</strong><br />
+              <span style={{ color: '#565959' }}>$12.99 — estimated 1-2 business days</span><br /><br />
+              <strong>Same-Day Delivery</strong><br />
+              <span style={{ color: '#565959' }}>Available in select areas — order before 2 PM</span>
+            </div>
+          </div>
+          <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: 20 }}>
+            <h3 style={{ margin: '0 0 8px', fontSize: 16 }}>Return Policy</h3>
+            <p style={{ fontSize: 14, color: '#565959', margin: 0 }}>
+              Free returns within 30 days of delivery. Items must be in original condition.
+            </p>
+          </div>
+        </div>
       )}
+
       {tab === 'reviews' && (
-        <VStack gap={4}>
-          <HStack gap={3} vAlign="center">
-            <VStack hAlign="center" gap={1}>
-              <Heading level={1} type="display-2">{product.rating}</Heading>
-              <HStack gap={1}>
-                {[1, 2, 3, 4, 5].map((s) => <Icon key={s} icon="success" />)}
-              </HStack>
-              <Text type="supporting" color="secondary">out of 5</Text>
-            </VStack>
-            <Divider orientation="vertical" />
-            <Button label="Write a Review" variant="secondary" />
-          </HStack>
-          <Card variant="muted">
-            <VStack gap={2}>
-              <HStack gap={2} vAlign="center">
-                <Text weight="bold">Ami Pena</Text>
-                <Text type="supporting" color="secondary">2 days ago</Text>
-              </HStack>
-              <HStack gap={1}>
-                {[1, 2, 3, 4, 5].map((s) => <Icon key={s} icon="success" />)}
-              </HStack>
-              <Text>Absolutely love this product! The quality exceeds expectations. Fast shipping and beautiful packaging. Would recommend to anyone looking for a premium item.</Text>
-            </VStack>
-          </Card>
-          <Card variant="muted">
-            <VStack gap={2}>
-              <HStack gap={2} vAlign="center">
-                <Text weight="bold">John Doe</Text>
-                <Text type="supporting" color="secondary">1 week ago</Text>
-              </HStack>
-              <HStack gap={1}>
-                {[1, 2, 3, 4, 5].map((s) => <Icon key={s} icon="success" />)}
-              </HStack>
-              <Text>Great product for the price. The design is minimalist and elegant. The only reason I&rsquo;m giving 4 stars is that the packaging could be more eco-friendly.</Text>
-            </VStack>
-          </Card>
-        </VStack>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: 20, display: 'flex', gap: 24, alignItems: 'center', flexWrap: 'wrap' }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: 36, fontWeight: 700 }}>{product.rating}</div>
+              <Stars rating={product.rating} />
+              <div style={{ fontSize: 13, color: '#565959' }}>out of 5</div>
+            </div>
+            <button className="btn-amazon secondary">Write a Review</button>
+          </div>
+          {[
+            { name: 'Ami Pena', date: '2 days ago', rating: 5, text: 'Absolutely love this product! The quality exceeds expectations. Fast shipping and beautiful packaging.' },
+            { name: 'John Doe', date: '1 week ago', rating: 4, text: 'Great product for the price. The design is minimalist and elegant.' },
+          ].map((r) => (
+            <div key={r.name} style={{ background: '#fff', border: '1px solid #ddd', borderRadius: 8, padding: 16 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 14, marginBottom: 6 }}>
+                <strong>{r.name}</strong>
+                <span style={{ color: '#565959', fontSize: 13 }}>{r.date}</span>
+              </div>
+              <Stars rating={r.rating} />
+              <p style={{ fontSize: 14, margin: '6px 0 0', lineHeight: 1.5, color: '#565959' }}>{r.text}</p>
+            </div>
+          ))}
+        </div>
       )}
-    </VStack>
+    </div>
   );
 }
