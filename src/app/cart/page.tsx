@@ -25,9 +25,9 @@ const columns = [
 ];
 
 const cartRows = [
-  { id: '1', name: 'Minimalist Watch', price: 199, quantity: 1, total: 199, image: '/neutral/preview-watch.png' },
-  { id: '3', name: 'Wireless Headphones', price: 249, quantity: 2, total: 498, image: '/neutral/preview-headphones.png' },
-  { id: '2', name: 'Canvas Backpack', price: 89, quantity: 1, total: 89, image: '/neutral/preview-backpack.png' },
+  { id: '1', name: 'Minimalist Watch', price: 199, quantity: 1, total: 199, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop' },
+  { id: '3', name: 'Wireless Headphones', price: 249, quantity: 2, total: 498, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&h=200&fit=crop' },
+  { id: '2', name: 'Canvas Backpack', price: 89, quantity: 1, total: 89, image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop' },
 ];
 
 export default function CartPage() {
@@ -84,9 +84,9 @@ export default function CartPage() {
           <VStack gap={3}>
             <Heading level={2}>Order Summary</Heading>
             <MetadataList>
-              <MetadataListItem label="Subtotal" value={`$${subtotal}`} />
-              <MetadataListItem label="Shipping" value="$12.00" />
-              <MetadataListItem label="Tax" value={`$${(subtotal * 0.08).toFixed(2)}`} />
+              <MetadataListItem label="Subtotal">{`$${subtotal}`}</MetadataListItem>
+              <MetadataListItem label="Shipping">$12.00</MetadataListItem>
+              <MetadataListItem label="Tax">{`$${(subtotal * 0.08).toFixed(2)}`}</MetadataListItem>
             </MetadataList>
             <Divider />
             <HStack gap={2} vAlign="center">

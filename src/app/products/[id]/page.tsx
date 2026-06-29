@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Heading, Text } from '@astryxdesign/core/Text';
 import { Button } from '@astryxdesign/core/Button';
@@ -19,13 +20,14 @@ import { products } from '@/components/products';
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const product = products.find(p => p.id === id) || products[0];
+  const [tab, setTab] = useState('details');
 
   return (
     <VStack gap={6}>
       <Breadcrumbs>
-        <BreadcrumbItem label="Home" href="/" />
-        <BreadcrumbItem label="Products" href="/products" />
-        <BreadcrumbItem label={product.name} isCurrentPage />
+        <BreadcrumbItem href="/">Home</BreadcrumbItem>
+        <BreadcrumbItem href="/products">Products</BreadcrumbItem>
+        <BreadcrumbItem isCurrent>{product.name}</BreadcrumbItem>
       </Breadcrumbs>
 
       <Card>
@@ -65,46 +67,48 @@ export default function ProductDetailPage() {
         </HStack>
       </Card>
 
-      <TabList label="Product details">
-        <Tab label="Details">
-          <VStack gap={3}>
-            <MetadataList>
-              <MetadataListItem label="SKU" value={`AST-${product.id}-001`} />
-              <MetadataListItem label="Category" value={product.category} />
-              <MetadataListItem label="Material" value="Premium quality" />
-              <MetadataListItem label="Weight" value="0.5 kg" />
-              <MetadataListItem label="Dimensions" value="20 x 15 x 5 cm" />
-            </MetadataList>
-          </VStack>
-        </Tab>
-        <Tab label="Shipping">
-          <VStack gap={2}>
-            <Text weight="bold">Shipping Information</Text>
-            <Text>Free shipping on orders over $50. Standard delivery 5-7 business days. Express delivery 1-2 business days available.</Text>
-          </VStack>
-        </Tab>
-        <Tab label="Reviews">
-          <VStack gap={3}>
-            <HStack gap={2} vAlign="center">
-              <Icon icon="success" />
-              <Heading level={2}>{product.rating}</Heading>
-              <Text type="supporting">out of 5</Text>
-            </HStack>
-            <Card variant="muted">
-              <VStack gap={1}>
-                <HStack gap={2} vAlign="center">
-                  <Text weight="bold">Ami Pena</Text>
-                  <Text type="supporting">2 days ago</Text>
-                </HStack>
-                <HStack gap={1}>
-                  {[1, 2, 3, 4, 5].map((s) => <Icon key={s} icon="success" />)}
-                </HStack>
-                <Text>Absolutely love this product! The quality exceeds expectations.</Text>
-              </VStack>
-            </Card>
-          </VStack>
-        </Tab>
+      <TabList value={tab} onChange={setTab}>
+        <Tab value="details" label="Details" />
+        <Tab value="shipping" label="Shipping" />
+        <Tab value="reviews" label="Reviews" />
       </TabList>
+
+      {tab === 'details' && (
+        <MetadataList>
+          <MetadataListItem label="SKU">{`AST-${product.id}-001`}</MetadataListItem>
+          <MetadataListItem label="Category">{product.category}</MetadataListItem>
+          <MetadataListItem label="Material">Premium quality</MetadataListItem>
+          <MetadataListItem label="Weight">0.5 kg</MetadataListItem>
+          <MetadataListItem label="Dimensions">20 x 15 x 5 cm</MetadataListItem>
+        </MetadataList>
+      )}
+      {tab === 'shipping' && (
+        <VStack gap={2}>
+          <Text weight="bold">Shipping Information</Text>
+          <Text>Free shipping on orders over $50. Standard delivery 5-7 business days. Express delivery 1-2 business days available.</Text>
+        </VStack>
+      )}
+      {tab === 'reviews' && (
+        <VStack gap={3}>
+          <HStack gap={2} vAlign="center">
+            <Icon icon="success" />
+            <Heading level={2}>{product.rating}</Heading>
+            <Text type="supporting">out of 5</Text>
+          </HStack>
+          <Card variant="muted">
+            <VStack gap={1}>
+              <HStack gap={2} vAlign="center">
+                <Text weight="bold">Ami Pena</Text>
+                <Text type="supporting">2 days ago</Text>
+              </HStack>
+              <HStack gap={1}>
+                {[1, 2, 3, 4, 5].map((s) => <Icon key={s} icon="success" />)}
+              </HStack>
+              <Text>Absolutely love this product! The quality exceeds expectations.</Text>
+            </VStack>
+          </Card>
+        </VStack>
+      )}
     </VStack>
   );
 }

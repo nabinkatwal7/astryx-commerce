@@ -23,9 +23,9 @@ export default function CheckoutPage() {
   return (
     <VStack gap={6}>
       <Breadcrumbs>
-        <BreadcrumbItem label="Home" href="/" />
-        <BreadcrumbItem label="Cart" href="/cart" />
-        <BreadcrumbItem label="Checkout" isCurrentPage />
+        <BreadcrumbItem href="/">Home</BreadcrumbItem>
+        <BreadcrumbItem href="/cart">Cart</BreadcrumbItem>
+        <BreadcrumbItem isCurrent>Checkout</BreadcrumbItem>
       </Breadcrumbs>
 
       <Heading level={1}>Checkout</Heading>
@@ -102,7 +102,7 @@ export default function CheckoutPage() {
           <Card>
             <VStack gap={4}>
               <Heading level={2}>Shipping Method</Heading>
-              <RadioList label="Shipping method">
+              <RadioList label="Shipping method" value="standard" onChange={() => {}}>
                 <RadioListItem
                   label="Economy Shipping"
                   description="Delivered in 5-7 business days"
@@ -112,7 +112,6 @@ export default function CheckoutPage() {
                   label="Standard Shipping"
                   description="Delivered in 3-5 business days"
                   value="standard"
-                  isSelected
                 />
                 <RadioListItem
                   label="Express Shipping"
@@ -126,8 +125,8 @@ export default function CheckoutPage() {
           <Card>
             <VStack gap={4}>
               <Heading level={2}>Payment Method</Heading>
-              <RadioList label="Payment method">
-                <RadioListItem label="Credit Card" value="card" isSelected />
+              <RadioList label="Payment method" value="card" onChange={() => {}}>
+                <RadioListItem label="Credit Card" value="card" />
                 <RadioListItem label="Apple Pay" value="apple-pay" />
                 <RadioListItem label="Google Pay" value="google-pay" />
               </RadioList>
@@ -168,15 +167,15 @@ export default function CheckoutPage() {
           <VStack gap={3}>
             <Heading level={2}>Order Summary</Heading>
             <MetadataList>
-              <MetadataListItem label="Minimalist Watch × 1" value="$199" />
-              <MetadataListItem label="Wireless Headphones × 2" value="$498" />
-              <MetadataListItem label="Canvas Backpack × 1" value="$89" />
+              <MetadataListItem label="Minimalist Watch × 1">$199</MetadataListItem>
+              <MetadataListItem label="Wireless Headphones × 2">$498</MetadataListItem>
+              <MetadataListItem label="Canvas Backpack × 1">$89</MetadataListItem>
             </MetadataList>
             <Divider />
             <MetadataList>
-              <MetadataListItem label="Subtotal" value="$786" />
-              <MetadataListItem label="Shipping" value="$16.00" />
-              <MetadataListItem label="Tax" value="$62.88" />
+              <MetadataListItem label="Subtotal">$786</MetadataListItem>
+              <MetadataListItem label="Shipping">$16.00</MetadataListItem>
+              <MetadataListItem label="Tax">$62.88</MetadataListItem>
             </MetadataList>
             <Divider />
             <HStack gap={2} vAlign="center">

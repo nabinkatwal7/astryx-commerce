@@ -72,10 +72,11 @@ export default function HomePage() {
 
       <Divider />
 
-      <Section heading="Shop by Category">
+      <Section>
+        <Heading level={2}>Shop by Category</Heading>
         <Grid columns={5} gap={4}>
           {["Wearables", "Audio", "Bags", "Home", "Food"].map((cat) => (
-            <SelectableCard key={cat} variant="muted">
+            <SelectableCard key={cat} variant="muted" label={cat} isSelected={false} onChange={() => {}}>
               <VStack gap={1} vAlign="center" hAlign="center">
                 <Icon icon="check" />
                 <Text weight="bold">{cat}</Text>
@@ -87,7 +88,8 @@ export default function HomePage() {
 
       <Divider />
 
-      <Section heading="Fresh from the Kitchen">
+      <Section>
+        <Heading level={2}>Fresh from the Kitchen</Heading>
         <Grid columns={{ minWidth: 300, max: 3 }} gap={4}>
           {foodItems.map((p) => (
             <Card key={p.id}>
@@ -114,16 +116,17 @@ export default function HomePage() {
 
       <Divider />
 
-      <Section heading="Our Happy Customers">
+      <Section>
+        <Heading level={2}>Our Happy Customers</Heading>
         <HStack gap={4} vAlign="center">
           <AvatarGroup>
             <Avatar
-              label="Ami Pena"
-              src="https://lookaside.facebook.com/assets/astryx/DATA-Ami-Pena.png"
+              name="Ami Pena"
+              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop"
             />
-            <Avatar label="John Doe" />
-            <Avatar label="Jane Smith" />
-            <Avatar label="Bob Wilson" />
+            <Avatar name="John Doe" />
+            <Avatar name="Jane Smith" />
+            <Avatar name="Bob Wilson" />
           </AvatarGroup>
           <Text type="supporting">Trusted by 10,000+ customers worldwide</Text>
         </HStack>
@@ -131,11 +134,12 @@ export default function HomePage() {
 
       <Divider />
 
-      <Section heading="Your Shopping Progress">
+      <Section>
+        <Heading level={2}>Your Shopping Progress</Heading>
         <VStack gap={2}>
           <HStack gap={3} vAlign="center">
             <Text>Complete your profile</Text>
-            <ProgressBar value={87.5} />
+            <ProgressBar label="Profile completion" value={87.5} />
             <Badge label="7/8" variant="info" />
           </HStack>
           <Text type="supporting" color="secondary">

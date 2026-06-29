@@ -1,41 +1,43 @@
 'use client';
 
+import { useState } from 'react';
 import { Heading, Text } from '@astryxdesign/core/Text';
 import { Button } from '@astryxdesign/core/Button';
 import { IconButton } from '@astryxdesign/core/IconButton';
 import { Card } from '@astryxdesign/core/Card';
 import { Badge } from '@astryxdesign/core/Badge';
-import { Divider } from '@astryxdesign/core/Divider';
 import { Icon } from '@astryxdesign/core/Icon';
-import { VStack, HStack, Section } from '@astryxdesign/core/Layout';
+import { VStack, HStack } from '@astryxdesign/core/Layout';
 import { StatusDot } from '@astryxdesign/core/StatusDot';
-import { Table, TableRow, TableCell, TableHeaderCell, proportional, useTableSortable, useTablePagination, paginateData } from '@astryxdesign/core/Table';
+import { Table, TableRow, TableCell, TableHeaderCell, proportional } from '@astryxdesign/core/Table';
 import { Pagination } from '@astryxdesign/core/Pagination';
 import { Timestamp } from '@astryxdesign/core/Timestamp';
 import { Toolbar } from '@astryxdesign/core/Toolbar';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { orders } from '@/components/products';
 
-const statusColor: Record<string, 'success' | 'warning' | 'info' | 'error'> = {
-  confirmed: 'info',
+const dotVariant: Record<string, 'success' | 'warning' | 'neutral' | 'error'> = {
+  confirmed: 'neutral',
   shipped: 'warning',
   delivered: 'success',
   cancelled: 'error',
 };
 
 const columns = [
-  { id: 'order', label: 'Order', width: proportional(1) },
-  { id: 'date', label: 'Date', width: proportional(1.5) },
-  { id: 'status', label: 'Status', width: proportional(1) },
-  { id: 'items', label: 'Items', width: proportional(0.5) },
-  { id: 'total', label: 'Total', width: proportional(1) },
-  { id: 'actions', label: '', width: proportional(0.5) },
+  { key: 'order', label: 'Order', width: proportional(1) },
+  { key: 'date', label: 'Date', width: proportional(1.5) },
+  { key: 'status', label: 'Status', width: proportional(1) },
+  { key: 'items', label: 'Items', width: proportional(0.5) },
+  { key: 'total', label: 'Total', width: proportional(1) },
+  { key: 'actions', label: '', width: proportional(0.5) },
 ];
 
+const PAGE_SIZE = 5;
+
 export default function OrdersPage() {
-  const sortable = useTableSortable({ columns, defaultSort: { id: 'date', direction: 'desc' } });
-  const sortedData = sortable.applySort(orders);
-  const pagination = useTablePagination({ data: sortedData, defaultPageSize: 5 });
+  const [page, setPage] = useState(1);
+  const totalPages = Math.ceil(orders.length / PAGE_SIZE);
+  const pageData = orders.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <VStack gap={6}>
@@ -43,22 +45,29 @@ export default function OrdersPage() {
 
       <Card>
         <VStack gap={4}>
-          <Toolbar>
-            <TextInput label="Search orders" placeholder="Search by order ID..." value="" onChange={() => {}} />
-            <Button label="Filter" variant="secondary" icon={<Icon icon="funnel" />} />
-            <Button label="Export" variant="ghost" icon={<Icon icon="arrowDown" />} />
-          </Toolbar>
+          <Toolbar
+            label="Order actions"
+            startContent={
+              <TextInput label="Search orders" placeholder="Search by order ID..." value="" onChange={() => {}} />
+            }
+            endContent={
+              <HStack gap={1}>
+                <Button label="Filter" variant="secondary" icon={<Icon icon="funnel" />} />
+                <Button label="Export" variant="ghost" icon={<Icon icon="arrowDown" />} />
+              </HStack>
+            }
+          />
 
-          <Table columns={columns} sortable={sortable} dividers="rows" density="compact">
+          <Table columns={columns} dividers="rows" density="compact">
             <TableRow>
-              <TableHeaderCell sortKey="order">Order</TableHeaderCell>
-              <TableHeaderCell sortKey="date">Date</TableHeaderCell>
-              <TableHeaderCell sortKey="status">Status</TableHeaderCell>
-              <TableHeaderCell sortKey="items">Items</TableHeaderCell>
-              <TableHeaderCell sortKey="total">Total</TableHeaderCell>
+              <TableHeaderCell>Order</TableHeaderCell>
+              <TableHeaderCell>Date</TableHeaderCell>
+              <TableHeaderCell>Status</TableHeaderCell>
+              <TableHeaderCell>Items</TableHeaderCell>
+              <TableHeaderCell>Total</TableHeaderCell>
               <TableHeaderCell />
             </TableRow>
-            {paginateData(pagination).map((order) => (
+            {pageData.map((order) => (
               <TableRow key={order.id}>
                 <TableCell>
                   <Text weight="bold">#{order.id}</Text>
@@ -68,8 +77,8 @@ export default function OrdersPage() {
                 </TableCell>
                 <TableCell>
                   <HStack gap={1} vAlign="center">
-                    <StatusDot variant={statusColor[order.status]} />
-                    <Badge label={order.status.charAt(0).toUpperCase() + order.status.slice(1)} variant={statusColor[order.status]} />
+                    <StatusDot variant={dotVariant[order.status]} label={order.status} />
+                    <Badge label={order.status.charAt(0).toUpperCase() + order.status.slice(1)} variant={dotVariant[order.status] as any} />
                   </HStack>
                 </TableCell>
                 <TableCell>{order.items}</TableCell>
@@ -84,9 +93,9 @@ export default function OrdersPage() {
           </Table>
 
           <Pagination
-            page={pagination.page}
-            totalPages={pagination.totalPages}
-            onChange={pagination.setPage}
+            page={page}
+            totalPages={totalPages}
+            onChange={setPage}
           />
         </VStack>
       </Card>

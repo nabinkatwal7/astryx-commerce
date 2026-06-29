@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { products } from "@/components/products";
 import { Badge } from "@astryxdesign/core/Badge";
 import { Button } from "@astryxdesign/core/Button";
@@ -17,9 +18,11 @@ import { TextInput } from "@astryxdesign/core/TextInput";
 import { Thumbnail } from "@astryxdesign/core/Thumbnail";
 
 export default function ProductsPage() {
+  const [view, setView] = useState("grid");
   return (
     <VStack gap={6}>
-      <Section heading="All Products">
+      <Section>
+        <Heading level={2}>All Products</Heading>
         <VStack gap={4}>
           <HStack gap={4} vAlign="center" wrap="wrap">
             <TextInput label="Search products" value="" onChange={() => {}} />
@@ -38,9 +41,9 @@ export default function ProductsPage() {
                 { label: "Rating", value: "rating" },
               ]}
             />
-            <SegmentedControl label="View">
-              <SegmentedControlItem label="Grid" isSelected />
-              <SegmentedControlItem label="List" />
+            <SegmentedControl value={view} onChange={setView} label="View">
+              <SegmentedControlItem value="grid" label="Grid" />
+              <SegmentedControlItem value="list" label="List" />
             </SegmentedControl>
           </HStack>
 
@@ -80,7 +83,7 @@ export default function ProductsPage() {
                   <Button
                     label={p.inStock ? "Add to cart" : "Notify me"}
                     variant={p.inStock ? "primary" : "secondary"}
-                    disabled={!p.inStock}
+                    isDisabled={!p.inStock}
                   />
                 </VStack>
               </Card>
